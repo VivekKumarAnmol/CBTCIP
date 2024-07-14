@@ -3,26 +3,26 @@ const buttons = document.querySelectorAll('button');
 const resultElement = document.getElementById('result');
 
 buttons.forEach(button => {
-    button.addEventListener('click', () => {
+    button.addEventListener('click', async () => {
         const userChoice = button.id;
-        const computerChoice = getRandomChoice();
-        const result = determineWinner(userChoice, computerChoice);
-        resultElement.textContent = `You chose ${userChoice}. Computer chose ${computerChoice}. Result: ${result}`;
+
+        try {
+            const response = await fetch('http://127.0.0.1:8080/play', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ user_choice: userChoice }),
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                resultElement.textContent = `You chose ${userChoice}. Computer chose ${data.result}. Result: ${data.result}`;
+            } else {
+                console.error('Error fetching data:', response.status);
+            }
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
     });
 });
-
-function getRandomChoice() {
-    const choices = ['rock', 'paper', 'scissors'];
-    return choices[Math.floor(Math.random() * choices.length)];
-}
-
-function determineWinner(user, computer) {
-    if (user === computer) return 'It\'s a tie!';
-    if ((user === 'rock' && computer === 'scissors') ||
-        (user === 'paper' && computer === 'rock') ||
-        (user === 'scissors' && computer === 'paper')) {
-        return 'You win!';
-    } else {
-        return 'Computer wins!';
-    }
-}

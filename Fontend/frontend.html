@@ -1,0 +1,70 @@
+<!--frontend.html-->
+<!DOCTYPE html>
+<html>
+<head>
+    <title> Rock Paper Scissors</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            /* Gradient background */
+            background: linear-gradient(to right, #ff9966, #ff5e62);
+        }    
+        h1 {
+            color:  White;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        button {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 20px;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #555;
+        }    
+        #rock { background-color: #db4437; }
+        #paper { background-color: #0f9d58; }
+        #scissors { background-color: #4285f4; }
+        #result {    
+            margin-top: 20px;
+            font-size: 24;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }                
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        function play(choice) {
+            $.ajax({
+                url: 'http://localhost:5000/play',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify( { 'choice': choice}),
+                success: function(data) {
+                    $('#result').text('Computer chose ' + data.computer_choice + '. '
+                    + (data.result == 'tie' ? 'It\'s a tiel' : (data.result == 'user' ? 'You Win!' : 'Computer Wins!')));
+                }
+            });
+        }
+    </script>
+</head>
+<body>
+    <h1>Rock Paper Scissors</h1>
+    <button id="rock" onclick="play('rock')">Rock</button>
+    <button id="paper" onclick="play('paper')">Paper</button>
+    <button id="scissors" onclick="play('scissors')">Scissors</button>
+    <div id="result"></div>
+</body>
+</html>                      
+
